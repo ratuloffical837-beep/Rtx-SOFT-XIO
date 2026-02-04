@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Master Hub - Super Toolset</title>
+    <script src='//libtl.com/sdk.js' data-zone='10465945' data-sdk='show_10465945'></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background: #0b0f19; color: #e2e8f0; }
+        .glass { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .glass:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .btn-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
+        .ad-unit { min-height: 100px; background: #1a202c; border: 1px dashed #4a5568; display: flex; items-center; justify-content: center; margin: 15px 0; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <header class="p-8 text-center">
+        <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+            AI Multi-Tasker PRO
+        </h1>
+        <p class="text-gray-400 mt-2">QR, ভিডিও ডাউনলোড, টিভি কন্ট্রোল এবং এআই ভিডিও - সব এক সাথে</p>
+    </header>
+
+    <main id="mainGrid" class="max-w-5xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div onclick="openFeature('qrSection')" class="glass p-6 rounded-3xl cursor-pointer text-center">
+            <div class="text-5xl mb-4">🔳</div>
+            <h3 class="text-xl font-bold">QR Maker & Scanner</h3>
+            <p class="text-sm text-gray-400 mt-2">লিঙ্ক থেকে কিউআর কোড তৈরি করুন</p>
+        </div>
+
+        <div onclick="openFeature('dlSection')" class="glass p-6 rounded-3xl cursor-pointer text-center">
+            <div class="text-5xl mb-4">🎥</div>
+            <h3 class="text-xl font-bold">Video Downloader</h3>
+            <p class="text-sm text-gray-400 mt-2">লোগো ছাড়া ভিডিও ডাউনলোড (AI Base)</p>
+        </div>
+
+        <div onclick="openFeature('tvSection')" class="glass p-6 rounded-3xl cursor-pointer text-center">
+            <div class="text-5xl mb-4">📺</div>
+            <h3 class="text-xl font-bold">TV Remote & Cast</h3>
+            <p class="text-sm text-gray-400 mt-2">মোবাইল দিয়ে টিভি কন্ট্রোল করুন</p>
+        </div>
+
+        <div onclick="openFeature('photoSection')" class="glass p-6 rounded-3xl cursor-pointer text-center">
+            <div class="text-5xl mb-4">🖼️</div>
+            <h3 class="text-xl font-bold">AI Photo Editor</h3>
+            <p class="text-sm text-gray-400 mt-2">ব্যাকগ্রাউন্ড রিমুভ ও ডিজাইন</p>
+        </div>
+
+        <div onclick="openFeature('aiVideoSection')" class="glass p-6 rounded-3xl cursor-pointer text-center">
+            <div class="text-5xl mb-4">🤖</div>
+            <h3 class="text-xl font-bold">Prompt to Video</h3>
+            <p class="text-sm text-gray-400 mt-2">AI দিয়ে ৩০ সেকেন্ডের ভিডিও</p>
+        </div>
+
+    </main>
+
+    <div id="contentDisplay" class="max-w-2xl mx-auto p-4 hidden">
+        <button onclick="goBack()" class="mb-6 text-blue-400 font-bold">← মূল মেনুতে ফিরুন</button>
+
+        <div id="qrSection" class="hidden glass p-8 rounded-3xl text-center">
+            <h2 class="text-2xl mb-4">QR Maker</h2>
+            <input type="text" id="qrInput" placeholder="এখানে লিখুন..." class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 mb-4">
+            <button onclick="handleAction(generateQR)" class="btn-gradient w-full py-4 rounded-xl font-bold">Generate QR</button>
+            <div id="qrcode" class="mt-6 flex justify-center bg-white p-4 rounded-xl mx-auto hidden"></div>
+            <button id="qrDlBtn" onclick="triggerAd('download')" class="mt-4 hidden text-green-400 underline">Download PNG</button>
+        </div>
+
+        <div id="dlSection" class="hidden glass p-8 rounded-3xl text-center">
+            <h2 class="text-2xl mb-4">Video Downloader (No Watermark)</h2>
+            <input type="text" placeholder="ভিডিও লিঙ্ক পেস্ট করুন..." class="w-full p-4 rounded-xl bg-gray-800 border border-gray-700 mb-4">
+            <button onclick="handleAction(fakeDownload)" class="btn-gradient w-full py-4 rounded-xl font-bold">Remove Logo & Download</button>
+        </div>
+
+        <div id="tvSection" class="hidden glass p-8 rounded-xl text-center">
+            <h2 class="text-2xl mb-4">Smart TV Control</h2>
+            <button onclick="triggerAd('connect')" class="bg-blue-600 w-full py-3 rounded-lg mb-4">Connect to TV (WiFi)</button>
+            <div class="grid grid-cols-3 gap-2 bg-gray-900 p-6 rounded-full border border-gray-700">
+                <button class="p-4 bg-gray-800 rounded-full">▲</button>
+                <button class="p-4 bg-blue-700 rounded-lg col-start-2">OK</button>
+                <button class="p-4 bg-gray-800 rounded-full col-start-2">▼</button>
+            </div>
+            <button onclick="handleAction(null)" class="mt-6 bg-purple-600 w-full py-3 rounded-lg">Mirror Phone Screen</button>
+        </div>
+
+        <div id="aiVideoSection" class="hidden glass p-8 rounded-xl text-center">
+            <h2 class="text-2xl mb-4">AI Video Generator</h2>
+            <textarea id="prompt" placeholder="Write your prompt here..." class="w-full p-4 rounded-xl bg-gray-800 h-32 mb-4"></textarea>
+            <button onclick="handleAction(fakeVideoGen)" class="btn-gradient w-full py-4 rounded-xl font-bold italic">Generate AI Video (30s)</button>
+        </div>
+
+    </div>
+
+    <div id="adLoader" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center text-center p-6">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
+        <h2 class="text-xl font-bold">বিজ্ঞাপন দেখা হচ্ছে...</h2>
+        <p class="text-gray-400 text-sm mt-2">বিজ্ঞাপনটি শেষ হলে আপনার ফাইলটি প্রস্তুত হবে।</p>
+    </div>
+
+    <script>
+        // Ad Links
+        const MONETAG_LINK = "https://otieu.com/4/9538763";
+        const ADSTERRA_LINK = "https://www.effectivegatecpm.com/p637sbmg?key=20f2c1ebf86d30e8ff5b1dd745c12896";
+
+        function triggerAd(type) {
+            // ১ নম্বর অ্যাড (Monetag) নতুন ট্যাবে খুলবে
+            window.open(MONETAG_LINK, '_blank');
+            
+            // ২ নম্বর অ্যাড (Adsterra) ইউজারকে দেখাবে
+            setTimeout(() => {
+                window.open(ADSTERRA_LINK, '_blank');
+            }, 1000);
+        }
+
+        function handleAction(callback) {
+            // বাটনে টিপ দিলে ২ টি অ্যাড দেখাবে
+            document.getElementById('adLoader').classList.remove('hidden');
+            triggerAd();
+            
+            setTimeout(() => {
+                document.getElementById('adLoader').classList.add('hidden');
+                if(callback) callback();
+            }, 3000); // ৩ সেকেন্ড পর কাজ শুরু হবে
+        }
+
+        function openFeature(id) {
+            // প্রফেশনাল ট্রানজিশন
+            handleAction(() => {
+                document.getElementById('mainGrid').classList.add('hidden');
+                document.getElementById('contentDisplay').classList.remove('hidden');
+                
+                // সব সেকশন হাইড করা
+                ['qrSection', 'dlSection', 'tvSection', 'aiVideoSection'].forEach(s => {
+                    document.getElementById(s).classList.add('hidden');
+                });
+                document.getElementById(id).classList.remove('hidden');
+            });
+        }
+
+        function goBack() {
+            document.getElementById('mainGrid').classList.remove('hidden');
+            document.getElementById('contentDisplay').classList.add('hidden');
+        }
+
+        function generateQR() {
+            const val = document.getElementById('qrInput').value;
+            const container = document.getElementById('qrcode');
+            container.innerHTML = "";
+            if(val) {
+                container.classList.remove('hidden');
+                new QRCode(container, val);
+                document.getElementById('qrDlBtn').classList.remove('hidden');
+            }
+        }
+
+        function fakeDownload() {
+            alert("প্রসেসিং হচ্ছে... লোগো রিমুভ করা হচ্ছে। ডাউনলোড শুরু হবে কিছুক্ষণের মধ্যে।");
+            triggerAd();
+        }
+
+        function fakeVideoGen() {
+            alert("AI আপনার ভিডিওটি বানাচ্ছে... ৩০ সেকেন্ড সময় লাগবে।");
+            triggerAd();
+        }
+    </script>
+</body>
+      </html>
