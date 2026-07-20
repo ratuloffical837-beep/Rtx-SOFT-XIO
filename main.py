@@ -3,6 +3,7 @@
 # Main Entry Point
 # ═══════════════════════════════════════
 
+import asyncio
 import logging
 from telegram.ext import (
     ApplicationBuilder,
@@ -10,7 +11,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     MessageHandler,
     filters,
-    ChatMemberHandler,
 )
 from config import BOT_TOKEN
 from keep_alive import keep_alive, start_ping
@@ -45,6 +45,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def post_init(application):
+    """Bot start হওয়ার পর scheduler setup"""
+    setup_scheduler(application.bot)
+    print("✅ Auto-post scheduler active")
+    print("═══════════════════════════════════════")
+    print("  ✅ RTX Bot is LIVE! 🎉")
+    print("═══════════════════════════════════════")
+
+
 def main():
     """Bot চালু করে"""
     
@@ -58,7 +67,12 @@ def main():
     print("✅ Keep-alive system active")
     
     # ─── Bot Application তৈরি ───
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = (
+        ApplicationBuilder()
+        .token(BOT_TOKEN)
+        .post_init(post_init)
+        .build()
+    )
     
     # ═══════════════════════════════════════
     # Command Handlers
@@ -110,7 +124,6 @@ def main():
     
     # ═══════════════════════════════════════
     # Text Message Handler (AI Reply)
-    # সবার শেষে রাখতে হবে
     # ═══════════════════════════════════════
     app.add_handler(
         MessageHandler(
@@ -119,17 +132,11 @@ def main():
         )
     )
     
-    # ─── Auto Post Scheduler ───
-    setup_scheduler(app.bot)
-    print("✅ Auto-post scheduler active")
-    
-    # ═══════════════════════════════════════
-    print("═══════════════════════════════════════")
-    print("  ✅ RTX Bot is LIVE! 🎉")
-    print("═══════════════════════════════════════")
-    
-    # ─── Bot চালু ───
-    app.run_polling(drop_pending_updates=True)
+    # ─── Bot চালু (polling) ───
+    app.run_polling(
+        allowed_updates=["message", "callback_query", "chat_member"],
+        drop_pending_updates=True,
+    )
 
 
 if __name__ == "__main__":
