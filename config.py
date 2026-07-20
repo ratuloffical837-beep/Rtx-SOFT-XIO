@@ -11,8 +11,8 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # ═══════════════════════════════════════
 # Telegram Links
 # ═══════════════════════════════════════
-CHANNEL_ID = "@ratulhossain4241"
-GROUP_ID = "@ratulhossain424"
+CHANNEL_ID = -1003214037943
+GROUP_ID = -1003680966726
 SALES_BOT = "@rtxearn2_bot"
 SUPPORT_USERNAME = "@ratulhossain56"
 
