@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════
-# AI FAQ Handler
-# Group + Private এ সব message এ reply
+# Reply Handler - Group + Private
+# Group এ সব text message এ reply দিবে
 # ═══════════════════════════════════════
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -9,9 +9,7 @@ from services.ai_content import generate_faq_answer
 
 
 async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    User যেকোনো text লিখলে AI answer দেয়
-    """
+    """সব text message এ AI reply"""
     
     # Message check
     if not update.message or not update.message.text:
@@ -22,47 +20,22 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not user_message:
         return
     
+    # Command হলে skip
+    if user_message.startswith("/"):
+        return
+    
     chat_type = update.effective_chat.type
     bot_username = context.bot.username
     
-    # ═══════════════════════════════════════
-    # Group এ কখন reply দিবে
-    # ═══════════════════════════════════════
-    if chat_type in ["group", "supergroup"]:
-        should_reply = False
-        
-        # Case 1: Bot কে mention করলে
-        if f"@{bot_username}" in user_message:
-            should_reply = True
-            user_message = user_message.replace(f"@{bot_username}", "").strip()
-        
-        # Case 2: Bot এর message এ reply দিলে
-        elif update.message.reply_to_message:
-            if update.message.reply_to_message.from_user:
-                if update.message.reply_to_message.from_user.id == context.bot.id:
-                    should_reply = True
-        
-        # Case 3: Trading related keywords থাকলে
-        else:
-            trading_keywords = [
-                "signal", "bot", "trade", "trading", "forex", "crypto",
-                "price", "cost", "buy", "kine", "kinbo", "kinbo",
-                "সিগনাল", "বট", "দাম", "কিনব", "কিনবো", "কত", 
-                "কিভাবে", "কেমন", "কোথায়", "প্রমো", "promo",
-                "rtx", "qutex", "premium", "vip"
-            ]
-            
-            message_lower = user_message.lower()
-            for keyword in trading_keywords:
-                if keyword.lower() in message_lower:
-                    should_reply = True
-                    break
-        
-        if not should_reply:
-            return
+    # Bot mention remove
+    if f"@{bot_username}" in user_message:
+        user_message = user_message.replace(f"@{bot_username}", "").strip()
+    
+    if not user_message:
+        return
     
     # ═══════════════════════════════════════
-    # "Typing..." action দেখায়
+    # Typing action
     # ═══════════════════════════════════════
     try:
         await context.bot.send_chat_action(
@@ -73,7 +46,7 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
         pass
     
     # ═══════════════════════════════════════
-    # AI থেকে answer generate
+    # AI answer generate
     # ═══════════════════════════════════════
     try:
         answer = generate_faq_answer(user_message)
@@ -81,17 +54,17 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
         print(f"AI Error: {e}")
         answer = (
             "ভাই, একটু পরে try করুন 🙏\n\n"
-            "অথবা সরাসরি জানতে:\n"
+            "বিস্তারিত জানতে:\n"
             "👉 @rtxearn2_bot"
         )
     
     keyboard = [
         [
-            InlineKeyboardButton("📦 Products", callback_data="products"),
-            InlineKeyboardButton("💰 Price", callback_data="price_list"),
+            InlineKeyboardButton("📦 Products", url="https://t.me/rtxearn2_bot"),
+            InlineKeyboardButton("💰 Price", url="https://t.me/rtxearn2_bot"),
         ],
         [
-            InlineKeyboardButton("🛒 কিনতে চাই", callback_data="products"),
+            InlineKeyboardButton("🛒 কিনতে চাই", url="https://t.me/rtxearn2_bot"),
             InlineKeyboardButton("👨‍💼 Support", url="https://t.me/ratulhossain56"),
         ],
     ]
@@ -103,8 +76,9 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
             reply_markup=InlineKeyboardMarkup(keyboard),
             reply_to_message_id=update.message.message_id,
         )
+        print(f"✅ Reply sent in {chat_type}")
     except Exception as e:
-        print(f"Reply error: {e}")
+        print(f"❌ Reply failed: {e}")
         try:
             await update.message.reply_text(text=answer)
         except:
