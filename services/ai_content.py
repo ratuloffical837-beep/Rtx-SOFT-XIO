@@ -1,6 +1,5 @@
 # ═══════════════════════════════════════
 # AI Content Generator (Gemini)
-# Stylish + Professional post তৈরি করে
 # ═══════════════════════════════════════
 
 import google.generativeai as genai
@@ -8,213 +7,211 @@ from config import GEMINI_API_KEY
 import random
 
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-pro")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 def generate_promotion_post():
-    """Product promotion post generate করে"""
+    """Product promotion post"""
     prompt = """
-    তুমি RTX নামের একটি Trading Signal Bot company এর 
-    marketing expert। 
-
-    তোমার কাজ হলো Telegram channel/group এ 
-    professional + stylish promotional post লেখা।
+    তুমি RTX Trading Signal Bot company এর marketing expert।
+    Telegram channel এ professional + stylish promotional post লেখো।
 
     Products:
-    1. Qutex Signal - 1,500tk (Promo: 1,000tk, Code: RTX4241) - Forex Signal
-    2. Qutex Premium - 3,000tk (Promo: 2,000tk, Code: RTX4241) - Advanced Forex
-    3. RTX PRO MAX AI - 5,000tk (No promo) - Crypto/Binance Signal
+    1. Qutex Signal - 1,500tk (Promo RTX4241: 1,000tk) - Forex
+    2. Qutex Premium - 3,000tk (Promo RTX4241: 2,000tk) - Advanced Forex
+    3. RTX PRO MAX AI - 5,000tk - Crypto Binance Signal
 
     Sales Bot: @rtxearn2_bot
-    Channel: @ratulhossain4241
 
     নিয়ম:
-    - বাংলা তে লিখবে
-    - Emoji ভালো মতো use করবে
-    - Professional + catchy হবে
-    - Customer কে attract করবে
-    - 15-20 line এর মধ্যে
-    - শেষে @rtxearn2_bot link দিবে
-    - প্রতিবার আলাদা style এ লিখবে
-    - Line separator ═══ বা ━━━ use করো
+    - বাংলা ভাষায়
+    - প্রচুর Emoji use করো
+    - Professional + Catchy
+    - 15-20 line
+    - ━━━ line separator use করো
+    - শেষে @rtxearn2_bot link
+    - প্রতিবার আলাদা style
+    - Trading focused
     """
-    
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return get_fallback_promotion()
+    return _generate(prompt, get_fallback_promotion)
 
 
 def generate_educational_post():
-    """Educational/tips post generate করে"""
+    """Educational trading tips"""
     topics = [
-        "Risk Management কেন জরুরি",
-        "Signal follow করার সঠিক নিয়ম",
-        "Trading psychology tips",
-        "কখন trade করবেন কখন করবেন না",
-        "Money management rules",
-        "Forex vs Crypto trading পার্থক্য",
-        "Candle pattern basics",
-        "Support ও Resistance কী",
-        "নতুন trader এর common mistakes",
-        "Profit consistent রাখার tips",
+        "Risk Management এর গুরুত্ব",
+        "Stop Loss কেন জরুরি",
+        "Money Management Rules",
+        "Trading Psychology Tips",
+        "Candle Pattern Basics",
+        "Support ও Resistance",
+        "RSI Indicator কী",
+        "MACD কীভাবে use করবেন",
+        "Trend Follow করার নিয়ম",
+        "Emotion Control এ Trading",
+        "Position Sizing",
+        "Risk Reward Ratio",
+        "Market Analysis Tips",
+        "Trading Journal রাখার নিয়ম",
+        "Fibonacci Retracement",
     ]
-    
     topic = random.choice(topics)
     
     prompt = f"""
-    তুমি RTX Trading এর expert। 
-    Telegram group এ educational post লিখবে।
+    তুমি RTX Trading expert।
+    Educational post লিখো।
 
     Topic: {topic}
 
     নিয়ম:
-    - বাংলা তে সহজ ভাষায়
+    - বাংলা ভাষায় সহজে
     - Emoji use করো
-    - 10-15 line
+    - 12-15 line
     - Informative + helpful
-    - শেষে RTX Bot এর কথা mention করো
-    - Sales Bot: @rtxearn2_bot
-    - Professional style
-    - Line separator use করো
+    - ━━━ separator
+    - শেষে "সঠিক signal পেতে @rtxearn2_bot"
     """
-    
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return get_fallback_educational()
+    return _generate(prompt, get_fallback_educational)
 
 
 def generate_success_story():
-    """Success story post generate করে"""
+    """Realistic success story"""
     prompt = """
-    তুমি RTX Trading Bot এর marketing expert।
-    একটা realistic success story post লিখো।
+    RTX Trading Bot এর customer এর success story লিখো।
 
     Products: Qutex Signal, Qutex Premium, RTX PRO MAX AI
-    Sales Bot: @rtxearn2_bot
+    Bot: @rtxearn2_bot
 
     নিয়ম:
-    - বাংলা তে
-    - Realistic story (কিন্তু attractive)
-    - Customer name fictional রাখো
-    - Profit amount realistic রাখো (500-3000tk range)
+    - বাংলা ভাষায়
+    - Realistic story
+    - Customer name (fictional): Rahim, Karim, Sohel, Nasir, Jamal
+    - Profit: 500-3000tk (realistic)
     - Emoji use করো
-    - 10-15 line
-    - শেষে "আপনিও try করুন" বলে @rtxearn2_bot link
+    - 10-12 line
+    - Believable
+    - ━━━ separator
+    - শেষে "আপনিও try করুন @rtxearn2_bot"
     """
-    
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return get_fallback_success()
+    return _generate(prompt, get_fallback_success)
 
 
 def generate_offer_post():
-    """Special offer post generate করে"""
+    """Promo code offer"""
     prompt = """
-    তুমি RTX এর marketing expert।
-    Promo code offer post লিখো।
+    RTX এর Promo offer post।
 
     Promo Code: RTX4241
     - Qutex Signal: 1500tk → 1000tk
     - Qutex Premium: 3000tk → 2000tk
     - RTX PRO MAX AI: 5000tk (no promo)
 
-    Sales Bot: @rtxearn2_bot
+    Bot: @rtxearn2_bot
 
     নিয়ম:
-    - বাংলা তে
-    - Urgency create করো ("Limited time!", "আজকেই!")
-    - Emoji ভালো মতো use করো
-    - 10-15 line
+    - বাংলা ভাষায়
+    - Urgency ("আজকেই!", "Limited!")
+    - Prominent emoji
+    - 12-15 line
     - Eye-catching
-    - Professional
+    - ━━━ separator
     """
-    
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return get_fallback_offer()
+    return _generate(prompt, get_fallback_offer)
 
 
 def generate_motivational_post():
-    """Motivational post generate করে"""
+    """Motivational for traders"""
     prompt = """
-    তুমি RTX Trading Community এর leader।
-    রাতের motivational post লিখো traders দের জন্য।
+    Trader দের জন্য motivational post।
 
     নিয়ম:
-    - বাংলা তে
-    - Trading related motivation
+    - বাংলা ভাষায়
+    - Trading motivation
     - Inspirational
-    - Emoji use করো
-    - 8-12 line
-    - শেষে RTX community join করতে বলো
-    - Bot: @rtxearn2_bot
+    - Emoji use
+    - 10-12 line
+    - ━━━ separator
+    - শেষে "RTX Family - @rtxearn2_bot"
     """
-    
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return get_fallback_motivational()
+    return _generate(prompt, get_fallback_motivational)
+
+
+def generate_signal_tips_post():
+    """Signal follow করার tips"""
+    prompt = """
+    Signal follow করার professional tips post।
+
+    Topics (একটা select করো):
+    - Signal আসলে সাথে সাথে trade
+    - Entry price এ ঢুকতে হবে
+    - Stop Loss অবশ্যই দিবে
+    - TP এ profit book
+    - Emotion control
+    - একবারে সব capital না
+    - Signal miss করলে skip
+
+    নিয়ম:
+    - বাংলা ভাষায়
+    - Professional
+    - Actionable tips
+    - Emoji use
+    - 12-15 line
+    - ━━━ separator
+    - শেষে "RTX PRO MAX AI - @rtxearn2_bot"
+    """
+    return _generate(prompt, get_fallback_signal_tips)
 
 
 def generate_faq_answer(question):
-    """Customer এর প্রশ্নের smart answer দেয়"""
+    """Customer এর প্রশ্নের answer"""
     prompt = f"""
-    তুমি RTX Trading Bot company এর customer support expert।
+    তুমি RTX Trading Bot company এর customer support।
 
     Company Info:
-    - Company: RTX
     - Products: 3টা Trading Signal Bot
-    - Qutex Signal (1500tk, promo 1000tk)
-    - Qutex Premium (3000tk, promo 2000tk)  
+    - Qutex Signal (1500tk, promo RTX4241: 1000tk)
+    - Qutex Premium (3000tk, promo RTX4241: 2000tk)
     - RTX PRO MAX AI (5000tk)
-    - Promo Code: RTX4241
     - Payment: bKash/Nagad 01344594241
     - Support: @ratulhossain56
     - Sales Bot: @rtxearn2_bot
-    - No refund policy
-    - No guarantee (Trading is risky)
-    - Signal accuracy high but not 100%
-    - Works on all devices (phone + PC)
-    - Telegram Mini Web App based
+    - Channel: @ratulhossain4241
+    - No refund
+    - No guarantee (Trading risky)
     
-    Important Rules:
-    - কখনো refund promise করবে না
-    - কখনো guaranteed profit বলবে না
-    - Trading risky বলবে
-    - কিন্তু positive থাকবে
-    - Product recommend করবে smartly
-    - Customer কে comfortable feel করাবে
+    Rules:
+    - কখনো refund promise না
+    - কখনো guaranteed profit না
+    - Trading risky বলো
+    - Positive থাকো
+    - Product recommend করো smartly
+    - Friendly + Professional
 
-    Customer এর প্রশ্ন: "{question}"
+    Customer question: "{question}"
 
-    বাংলা তে professional, friendly, 
-    helpful answer দাও। Emoji use করো।
-    শেষে product recommend করো subtly।
+    বাংলা ভাষায় short (5-8 line), professional, friendly answer।
+    Emoji use করো। শেষে product recommend করো।
     """
-    
+    return _generate(prompt, lambda: (
+        "ভাই, ধন্যবাদ! 🙏\n\n"
+        "বিস্তারিত জানতে:\n"
+        "👉 @rtxearn2_bot\n"
+        "👨‍💼 @ratulhossain56"
+    ))
+
+
+def _generate(prompt, fallback):
+    """AI generate wrapper with fallback"""
     try:
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return (
-            "ভাই, আপনার প্রশ্নের জন্য ধন্যবাদ! 🙏\n\n"
-            "বিস্তারিত জানতে আমাদের admin এর সাথে কথা বলুন:\n"
-            f"👨‍💼 Support: @ratulhossain56\n"
-            f"📞 WhatsApp: 01344594241"
-        )
+        print(f"AI Error: {e}")
+        return fallback()
 
 
 # ═══════════════════════════════════════
-# Fallback Posts (AI fail করলে)
+# Fallback Posts
 # ═══════════════════════════════════════
 
 def get_fallback_promotion():
@@ -223,36 +220,47 @@ def get_fallback_promotion():
             "━━━━━━━━━━━━━━━━━━━━\n"
             "🔥 RTX Trading Signal 🔥\n"
             "━━━━━━━━━━━━━━━━━━━━\n\n"
-            "💎 3টা Powerful Bot:\n\n"
+            "💎 3টা Powerful Signal Bot:\n\n"
             "🥉 Qutex Signal - 1,000tk\n"
-            "   (Promo: RTX4241)\n\n"
+            "   (Promo: RTX4241)\n"
             "🥈 Qutex Premium - 2,000tk\n"
-            "   (Promo: RTX4241)\n\n"
+            "   (Promo: RTX4241)\n"
             "🥇 RTX PRO MAX AI - 5,000tk\n\n"
             "✅ Real-time Data\n"
             "✅ High Accuracy\n"
-            "✅ Instant Access\n\n"
-            "🎯 Details: @rtxearn2_bot\n"
-            "📢 Channel: @ratulhossain4241\n"
-            "━━━━━━━━━━━━━━━━━━━━"
+            "✅ 24/7 Support\n\n"
+            "🎯 @rtxearn2_bot"
+        ),
+        (
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "💰 Earn with RTX Signals\n"
+            "━━━━━━━━━━━━━━━━━━━━\n\n"
+            "📊 Real Market Data\n"
+            "🎯 Accurate Signal\n"
+            "⚡ Instant Access\n\n"
+            "🥇 VIP: RTX PRO MAX AI\n"
+            "💎 Only 5000tk\n\n"
+            "🚀 Start Now: @rtxearn2_bot"
         ),
     ]
     return random.choice(posts)
 
 
 def get_fallback_educational():
-    return (
-        "━━━━━━━━━━━━━━━━━━━━\n"
-        "💡 Trading Tips 💡\n"
-        "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "✅ সবসময় Stop Loss use করুন\n"
-        "✅ একবারে বেশি invest করবেন না\n"
-        "✅ Signal follow করুন\n"
-        "✅ Patience রাখুন\n\n"
-        "🎯 Accurate Signal পেতে:\n"
-        "👉 @rtxearn2_bot\n"
-        "━━━━━━━━━━━━━━━━━━━━"
-    )
+    posts = [
+        (
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "💡 Trading Tips 💡\n"
+            "━━━━━━━━━━━━━━━━━━━━\n\n"
+            "✅ Stop Loss অবশ্যই দিন\n"
+            "✅ Risk Management মেনে চলুন\n"
+            "✅ Signal follow করুন\n"
+            "✅ Patience রাখুন\n"
+            "✅ Emotion control করুন\n\n"
+            "🎯 @rtxearn2_bot"
+        ),
+    ]
+    return random.choice(posts)
 
 
 def get_fallback_success():
@@ -260,11 +268,10 @@ def get_fallback_success():
         "━━━━━━━━━━━━━━━━━━━━\n"
         "🎉 Success Story!\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "আমাদের একজন VIP user আজকে\n"
-        "RTX PRO MAX AI দিয়ে দারুণ profit করেছে!\n\n"
-        "📈 Signal follow করলে result আসেই!\n\n"
-        "👉 Try করুন: @rtxearn2_bot\n"
-        "━━━━━━━━━━━━━━━━━━━━"
+        "'RTX VIP Bot দিয়ে আজ 2000tk profit!'\n"
+        "- Rahim, Dhaka\n\n"
+        "📈 আপনিও start করুন!\n"
+        "👉 @rtxearn2_bot"
     )
 
 
@@ -277,19 +284,30 @@ def get_fallback_offer():
         "💰 Qutex Signal: 1500→1000tk\n"
         "💰 Qutex Premium: 3000→2000tk\n\n"
         "⏰ Limited time!\n\n"
-        "👉 @rtxearn2_bot\n"
-        "━━━━━━━━━━━━━━━━━━━━"
+        "👉 @rtxearn2_bot"
     )
 
 
 def get_fallback_motivational():
     return (
         "━━━━━━━━━━━━━━━━━━━━\n"
-        "🌟 Good Night Traders! 🌟\n"
+        "🌟 Never Give Up! 🌟\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "আজকের দিন শেষ, কালকে নতুন সুযোগ!\n\n"
-        "💪 Never give up!\n"
-        "📈 Consistency is key!\n\n"
-        "🎯 RTX Family: @rtxearn2_bot\n"
-        "━━━━━━━━━━━━━━━━━━━━"
-  )
+        "💪 Consistency is key\n"
+        "📈 Learn from mistakes\n"
+        "🎯 Trust the process\n\n"
+        "RTX Family: @rtxearn2_bot"
+    )
+
+
+def get_fallback_signal_tips():
+    return (
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "📊 Signal Tips 📊\n"
+        "━━━━━━━━━━━━━━━━━━━━\n\n"
+        "✅ Signal আসলে সাথে সাথে trade\n"
+        "✅ Entry price ঠিক রাখুন\n"
+        "✅ Stop Loss অবশ্যই\n"
+        "✅ TP এ profit book\n\n"
+        "🚀 @rtxearn2_bot"
+    )
