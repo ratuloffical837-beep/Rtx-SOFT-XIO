@@ -3,7 +3,8 @@
 # নির্দিষ্ট সময়ে Channel + Group এ post
 # ═══════════════════════════════════════
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import asyncio
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from config import CHANNEL_ID, GROUP_ID, POST_SCHEDULE
 from services.ai_content import (
@@ -14,11 +15,11 @@ from services.ai_content import (
     generate_motivational_post,
 )
 
-scheduler = AsyncIOScheduler(timezone="Asia/Dhaka")
+scheduler = BackgroundScheduler(timezone="Asia/Dhaka")
 
 
-async def post_to_channel_and_group(bot, post_type):
-    """Channel + Group দুই জায়গায় post করে"""
+def post_to_channel_and_group(bot, post_type):
+    """Channel + Group দুই জায়গায় post করে (sync wrapper)"""
     
     # AI দিয়ে content generate
     generators = {
@@ -31,46 +32,38 @@ async def post_to_channel_and_group(bot, post_type):
     
     content = generators.get(post_type, generate_promotion_post)()
     
-    try:
+    # Async function কে sync context এ চালানোর জন্য
+    async def send_posts():
         # Channel এ post
-        await bot.send_message(
-            chat_id=CHANNEL_ID,
-            text=content,
-            parse_mode="Markdown",
-            disable_web_page_preview=True,
-        )
-        print(f"✅ Channel post done: {post_type}")
-    except Exception as e:
-        print(f"❌ Channel post failed: {e}")
-        # Markdown fail করলে plain text এ পাঠায়
         try:
             await bot.send_message(
                 chat_id=CHANNEL_ID,
                 text=content,
                 disable_web_page_preview=True,
             )
-        except Exception as e2:
-            print(f"❌ Channel retry failed: {e2}")
-    
-    try:
+            print(f"✅ Channel post done: {post_type}")
+        except Exception as e:
+            print(f"❌ Channel post failed: {e}")
+        
         # Group এ post
-        await bot.send_message(
-            chat_id=GROUP_ID,
-            text=content,
-            parse_mode="Markdown",
-            disable_web_page_preview=True,
-        )
-        print(f"✅ Group post done: {post_type}")
-    except Exception as e:
-        print(f"❌ Group post failed: {e}")
         try:
             await bot.send_message(
                 chat_id=GROUP_ID,
                 text=content,
                 disable_web_page_preview=True,
             )
-        except Exception as e2:
-            print(f"❌ Group retry failed: {e2}")
+            print(f"✅ Group post done: {post_type}")
+        except Exception as e:
+            print(f"❌ Group post failed: {e}")
+    
+    # New event loop create করে run
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(send_posts())
+        loop.close()
+    except Exception as e:
+        print(f"❌ Scheduler error: {e}")
 
 
 def setup_scheduler(bot):
