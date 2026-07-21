@@ -1,219 +1,204 @@
 # ═══════════════════════════════════════
-# Product Details Handlers
+# Product Handlers
 # ═══════════════════════════════════════
 
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from data.products import PRODUCTS
 
+log = logging.getLogger(__name__)
+
 
 async def show_all_products(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """সব products দেখায়"""
-    
     query = update.callback_query
     await query.answer()
-    
+
     text = (
         "━━━━━━━━━━━━━━━━━━━━\n"
-        "💎 RTX এর ৩টা Signal Bot:\n"
+        "💎 RTX Signal Bot ৩টি:\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
     )
-    
-    for key, product in PRODUCTS.items():
-        promo_text = ""
+
+    for product in PRODUCTS.values():
+        promo = ""
         if product["promo_price"]:
-            promo_text = f"🎁 Promo ({product['promo_code']}): {product['promo_price']:,}tk\n"
-        
+            promo = f"🎁 Promo: {product['promo_price']:,}tk ({product['promo_code']})\n"
+
         text += (
             f"{product['badge']} {product['name']}\n"
-            f"💰 Price: {product['price']:,}tk\n"
-            f"{promo_text}"
-            f"📊 Type: {product['type']}\n"
-            f"⭐ Best for: {product['best_for']}\n"
+            f"   🤖 {product['username']}\n"
+            f"   💰 Price: {product['price']:,}tk\n"
+            f"   {promo}"
+            f"   📊 {product['type']}\n"
             f"━━━━━━━━━━━━━━━━━━━━\n\n"
         )
-    
-    text += "কোনটা সম্পর্কে বিস্তারিত জানতে চান? 👇"
-    
-    keyboard = [
-        [InlineKeyboardButton("🥉 Qutex Signal Details", callback_data="detail_bot1")],
-        [InlineKeyboardButton("🥈 Qutex Premium Details", callback_data="detail_bot2")],
-        [InlineKeyboardButton("🥇 RTX PRO MAX AI Details", callback_data="detail_bot3")],
+
+    text += "বিস্তারিত দেখতে নিচে click করুন 👇"
+
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🥉 Qutex Signal", callback_data="detail_bot1")],
+        [InlineKeyboardButton("🥈 Qutex Premium", callback_data="detail_bot2")],
+        [InlineKeyboardButton("🥇 RTX PRO MAX AI", callback_data="detail_bot3")],
         [InlineKeyboardButton("🔙 Back", callback_data="back_start")],
-    ]
-    
-    await query.edit_message_text(
-        text=text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-    )
+    ])
+
+    try:
+        await query.edit_message_text(text=text, reply_markup=keyboard)
+    except Exception as e:
+        log.error(f"show_all_products error: {e}")
 
 
 async def show_product_detail(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Individual product details দেখায়"""
-    
     query = update.callback_query
     await query.answer()
-    
+
     bot_key = query.data.replace("detail_", "")
     product = PRODUCTS.get(bot_key)
-    
     if not product:
         return
-    
-    # Features list
-    features_text = ""
-    for feature in product["features"]:
-        features_text += f"  ✅ {feature}\n"
-    
-    # Strategies (Bot 3 only)
-    strategy_text = ""
+
+    features = "\n".join(f"  ✅ {f}" for f in product["features"])
+
+    strategies = ""
     if "strategies" in product:
-        strategy_text = "\n🎯 Signal Strategy Modes:\n\n"
-        for i, strategy in enumerate(product["strategies"], 1):
-            strategy_text += (
-                f"  {i}️⃣ {strategy['emoji']} {strategy['name']}\n"
-                f"     ⚡ {strategy['desc']}\n\n"
-            )
-    
-    # Price text
-    price_text = f"💰 Price: {product['price']:,}tk"
+        strategies = "\n🎯 Strategy Modes:\n"
+        for i, s in enumerate(product["strategies"], 1):
+            strategies += f"  {i}. {s['emoji']} {s['name']} — {s['desc']}\n"
+
     if product["promo_price"]:
-        price_text += (
-            f"\n🎁 Promo Code: {product['promo_code']}\n"
-            f"💰 Promo Price: {product['promo_price']:,}tk\n"
+        price_text = (
+            f"💰 Price: {product['price']:,}tk\n"
+            f"🎁 Promo ({product['promo_code']}): {product['promo_price']:,}tk\n"
             f"💵 Save: {product['price'] - product['promo_price']:,}tk!"
         )
+        buy_label = f"🛒 কিনুন — {product['promo_price']:,}tk"
     else:
-        price_text += "\n⚠️ কোনো Promo Code নেই (Fixed Price)"
-    
+        price_text = (
+            f"💰 Price: {product['price']:,}tk (Fixed)\n"
+            f"⚠️ কোনো Promo নেই"
+        )
+        buy_label = f"🛒 কিনুন — {product['price']:,}tk"
+
     text = (
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{product['badge']} {product['name']}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"🤖 Bot: {product['username']}\n"
         f"📊 Type: {product['type']}\n"
-        f"📡 Data: {product['data_source']}\n\n"
+        f"📡 Data: {product['data_source']}\n"
+        f"⭐ Best for: {product['best_for']}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 কীভাবে কাজ করে:\n\n"
+        f"ℹ️ কীভাবে কাজ করে:\n\n"
         f"{product['how_it_works']}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"✨ Features:\n\n"
-        f"{features_text}\n"
-        f"{strategy_text}"
+        f"{features}\n"
+        f"{strategies}\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 Free vs Premium:\n\n"
-        f"  Free: দৈনিক {product['free_signals']}টি Signal\n"
-        f"  Premium: {product['premium_signals']} Signal\n\n"
+        f"📊 Free vs Premium:\n"
+        f"  Free: দৈনিক {product['free_signals']}টি\n"
+        f"  Premium: {product['premium_signals']}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
         f"{price_text}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"📸 Live Proof দেখুন:\n"
-        f"👉 @ratulhossain4241\n"
+        f"📸 Proof: @ratulhossain4241\n"
         f"━━━━━━━━━━━━━━━━━━━━"
     )
-    
-    # Buy button
-    buy_text = f"🛒 কিনুন"
-    if product["promo_price"]:
-        buy_text += f" - {product['promo_price']:,}tk"
-    else:
-        buy_text += f" - {product['price']:,}tk"
-    
-    keyboard = [
-        [InlineKeyboardButton(buy_text, callback_data=f"buy_{bot_key}")],
-        [InlineKeyboardButton("🎬 Demo/Proof দেখুন", url="https://t.me/ratulhossain4241")],
-        [InlineKeyboardButton("❓ প্রশ্ন করুন", callback_data="ask_question")],
-        [InlineKeyboardButton("🔙 All Products", callback_data="products")],
-    ]
-    
-    await query.edit_message_text(
-        text=text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-    )
+
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton(buy_label, callback_data=f"buy_{bot_key}")],
+        [InlineKeyboardButton("📱 Open App", url=product["mini_app"])],
+        [InlineKeyboardButton("🎬 Proof/Demo", url="https://t.me/ratulhossain4241")],
+        [InlineKeyboardButton("❓ প্রশ্ন করুন", callback_data="faq")],
+        [InlineKeyboardButton("🔙 Back", callback_data="products")],
+    ])
+
+    try:
+        await query.edit_message_text(text=text, reply_markup=keyboard)
+    except Exception as e:
+        log.error(f"show_product_detail error: {e}")
 
 
 async def show_price_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Price list দেখায়"""
-    
     query = update.callback_query
     await query.answer()
-    
+
     text = (
         "━━━━━━━━━━━━━━━━━━━━\n"
         "💰 RTX Price List\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "🥉 Qutex Signal 📊\n"
+        "   🤖 @qutex4241pro_bot\n"
         "   Normal: 1,500tk\n"
         "   🎁 Promo (RTX4241): 1,000tk\n"
-        "   ✅ Save: 500tk!\n\n"
+        "   ✅ Save: 500tk\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "🥈 Qutex Premium 📊💵\n"
+        "   🤖 @qutexperiyam_bot\n"
         "   Normal: 3,000tk\n"
         "   🎁 Promo (RTX4241): 2,000tk\n"
-        "   ✅ Save: 1,000tk!\n\n"
+        "   ✅ Save: 1,000tk\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "🥇 RTX PRO MAX AI 🚀\n"
+        "   🤖 @rtxpromaxai4241_bot\n"
         "   Price: 5,000tk (Fixed)\n"
-        "   ⚠️ No promo available\n\n"
+        "   ⚠️ Promo নেই\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "💳 Payment Methods:\n"
+        "💳 Payment:\n"
         "   📱 bKash: 01344594241\n"
         "   📱 Nagad: 01344594241\n\n"
-        "━━━━━━━━━━━━━━━━━━━━\n"
-        "কোনটা নিবেন? 👇\n"
         "━━━━━━━━━━━━━━━━━━━━"
     )
-    
-    keyboard = [
-        [InlineKeyboardButton("🛒 Qutex Signal - 1,000tk", callback_data="buy_bot1")],
-        [InlineKeyboardButton("🛒 Qutex Premium - 2,000tk", callback_data="buy_bot2")],
-        [InlineKeyboardButton("🛒 RTX PRO MAX AI - 5,000tk", callback_data="buy_bot3")],
+
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🛒 Qutex Signal — 1,000tk", callback_data="buy_bot1")],
+        [InlineKeyboardButton("🛒 Qutex Premium — 2,000tk", callback_data="buy_bot2")],
+        [InlineKeyboardButton("🛒 RTX PRO MAX AI — 5,000tk", callback_data="buy_bot3")],
         [InlineKeyboardButton("🔙 Back", callback_data="back_start")],
-    ]
-    
-    await query.edit_message_text(
-        text=text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-    )
+    ])
+
+    try:
+        await query.edit_message_text(text=text, reply_markup=keyboard)
+    except Exception as e:
+        log.error(f"show_price_list error: {e}")
 
 
 async def show_promo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Promo code দেখায়"""
-    
     query = update.callback_query
     await query.answer()
-    
+
     text = (
         "━━━━━━━━━━━━━━━━━━━━\n"
         "🎁 Special Promo Code!\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "🔑 Promo Code: RTX4241\n\n"
+        "🔑 Code: RTX4241\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
-        "💰 Discount Details:\n\n"
         "🥉 Qutex Signal:\n"
-        "   1,500tk → 1,000tk\n"
-        "   ✅ Save: 500tk!\n\n"
+        "   1,500tk → 1,000tk (Save 500tk!)\n"
+        "   🤖 @qutex4241pro_bot\n\n"
         "🥈 Qutex Premium:\n"
-        "   3,000tk → 2,000tk\n"
-        "   ✅ Save: 1,000tk!\n\n"
+        "   3,000tk → 2,000tk (Save 1,000tk!)\n"
+        "   🤖 @qutexperiyam_bot\n\n"
         "🥇 RTX PRO MAX AI:\n"
-        "   ⚠️ Promo apply হয় না\n"
-        "   Price: 5,000tk (fixed)\n\n"
+        "   5,000tk Fixed ⚠️ (Promo নেই)\n"
+        "   🤖 @rtxpromaxai4241_bot\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "📌 কীভাবে ব্যবহার করবেন:\n\n"
-        "1️⃣ App এ যান\n"
-        "2️⃣ Buy Premium click\n"
-        "3️⃣ Promo Code দিন: RTX4241\n"
-        "4️⃣ Discount apply হবে\n"
+        "1️⃣ App Open করুন\n"
+        "2️⃣ Buy Premium click করুন\n"
+        "3️⃣ Code দিন: RTX4241\n"
+        "4️⃣ Discount apply হবে ✅\n"
         "5️⃣ Payment করুন\n\n"
         "━━━━━━━━━━━━━━━━━━━━"
     )
-    
-    keyboard = [
-        [InlineKeyboardButton("🛒 এখনই Buy করুন", callback_data="products")],
+
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🛒 এখনই কিনুন", callback_data="products")],
         [InlineKeyboardButton("🔙 Back", callback_data="back_start")],
-    ]
-    
-    await query.edit_message_text(
-        text=text,
-        reply_markup=InlineKeyboardMarkup(keyboard),
-                                     )
+    ])
+
+    try:
+        await query.edit_message_text(text=text, reply_markup=keyboard)
+    except Exception as e:
+        log.error(f"show_promo error: {e}")
