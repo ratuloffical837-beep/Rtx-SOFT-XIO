@@ -101,7 +101,7 @@ async def _startup_post(application):
         "🥇 RTX PRO MAX AI — 5,000tk\n"
         "   🤖 @rtxpromaxai4241_bot\n\n"
         "🎁 Promo Code: RTX4241\n"
-        "💳 bKash/Nagad: 01344594241\n\n"
+        "💳 bKash/Nagad: 01725218874\n\n"
         "📢 @ratulhossain4241\n"
         "🎯 @rtxearn2_bot\n"
         "👨‍💼 @ratulhossain56\n"
