@@ -98,8 +98,8 @@ def generate_smart_reply(user_message: str) -> str:
     if any(p in msg_lower for p in payment_words):
         return (
             "💳 Payment Numbers:\n"
-            "📱 bKash: 01344594241 (Send Money)\n"
-            "📱 Nagad: 01344594241 (Send Money)\n\n"
+            "📱 bKash: 01725218874 (Send Money)\n"
+            "📱 Nagad: 01725218874 (Send Money)\n\n"
             "সমস্যা হলে @ratulhossain56 এ মেসেজ দিন 🙏"
         )
 
@@ -475,7 +475,7 @@ def generate_bot_links_post() -> str:
             "   👉 https://t.me/rtxpromaxai4241_bot/binancesignalbot\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "🎁 Promo: RTX4241 (Save 500-1000tk!)\n"
-            "💳 Payment: bKash/Nagad 01344594241\n\n"
+            "💳 Payment: bKash/Nagad 01725218874\n\n"
             "🆘 সমস্যা? @ratulhossain56\n"
             "━━━━━━━━━━━━━━━━━━━━"
         ),
