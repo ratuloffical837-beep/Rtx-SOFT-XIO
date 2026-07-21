@@ -146,8 +146,8 @@ async def show_price_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "   ⚠️ Promo নেই\n\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "💳 Payment:\n"
-        "   📱 bKash: 01344594241\n"
-        "   📱 Nagad: 01344594241\n\n"
+        "   📱 bKash: 01725218874\n"
+        "   📱 Nagad: 01725218874\n\n"
         "━━━━━━━━━━━━━━━━━━━━"
     )
 
