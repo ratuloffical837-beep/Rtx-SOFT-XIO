@@ -30,7 +30,7 @@ Products:
      App: https://t.me/qutexperiyam_bot/qutexsignalbot
   3. RTX PRO MAX AI (@rtxpromaxai4241_bot) — Crypto/Binance — 5000tk (No promo)
      App: https://t.me/rtxpromaxai4241_bot/binancesignalbot
-Payment: bKash/Nagad 01344594241
+Payment: bKash/Nagad 01725218874
 Support: @ratulhossain56
 Sales: @rtxearn2_bot
 Channel: @ratulhossain4241
@@ -454,7 +454,7 @@ def generate_bot_links_post() -> str:
             "   💰 5,000tk\n\n"
             "━━━━━━━━━━━━━━━━━━━━\n"
             "🎁 Promo Code: RTX4241\n"
-            "💳 bKash/Nagad: 01344594241\n\n"
+            "💳 bKash/Nagad: 01725218874\n\n"
             "📢 @ratulhossain4241\n"
             "👥 @ratulhossain424\n"
             "🎯 Sales: @rtxearn2_bot\n"
