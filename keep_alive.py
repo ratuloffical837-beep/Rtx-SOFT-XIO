@@ -1,21 +1,21 @@
 # ═══════════════════════════════════════
 # Keep Alive System
-# Bot যাতে কখনো ঘুমিয়ে না যায়
-# প্রতি 2 মিনিটে নিজেকে নিজে ping করে
 # ═══════════════════════════════════════
 
 from flask import Flask
 from threading import Thread
 import requests
 import time
+import logging
 from config import RENDER_URL, PING_INTERVAL
 
+log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return "✅ RTX Marketing Bot is ALIVE! 🚀"
+    return "✅ RTX Marketing Bot is ALIVE! 🚀", 200
 
 
 @app.route("/health")
@@ -23,33 +23,26 @@ def health():
     return "OK", 200
 
 
-def run_flask():
-    """Flask server চালু করে"""
-    app.run(host="0.0.0.0", port=8080)
+def _run_flask():
+    app.run(host="0.0.0.0", port=8080, use_reloader=False)
 
 
 def keep_alive():
-    """Flask server background এ চালু করে"""
-    t = Thread(target=run_flask, daemon=True)
-    t.start()
+    Thread(target=_run_flask, daemon=True).start()
+    log.info("✅ Flask keep-alive server started")
 
 
-def self_ping():
-    """
-    নিজেকে নিজে ping করে যাতে bot ঘুমিয়ে না যায়
-    প্রতি 2 মিনিটে একবার
-    """
+def _self_ping():
     while True:
         try:
             if RENDER_URL:
-                requests.get(f"{RENDER_URL}/health", timeout=10)
-                print(f"✅ Self-ping successful!")
+                r = requests.get(f"{RENDER_URL}/health", timeout=10)
+                log.info(f"✅ Ping OK ({r.status_code})")
         except Exception as e:
-            print(f"⚠️ Ping failed: {e}")
+            log.warning(f"⚠️ Ping failed: {e}")
         time.sleep(PING_INTERVAL)
 
 
 def start_ping():
-    """Ping system background এ চালু করে"""
-    t = Thread(target=self_ping, daemon=True)
-    t.start()
+    Thread(target=_self_ping, daemon=True).start()
+    log.info("✅ Self-ping system started")
