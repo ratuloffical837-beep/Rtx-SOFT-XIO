@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════
-# /start Command Handler
+# /start Command - Islamic Version
 # ═══════════════════════════════════════
 
 import logging
@@ -9,14 +9,39 @@ from telegram.ext import ContextTypes
 log = logging.getLogger(__name__)
 
 
-def _main_keyboard():
-    return InlineKeyboardMarkup([
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """User /start দিলে Islamic welcome"""
+
+    user = update.effective_user
+    first_name = user.first_name or "ভাই"
+
+    text = (
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"🌸 আসসালামু আলাইকুম {first_name} ভাই!\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n\n"
+        f"বিসমিল্লাহির রহমানির রহিম 🤲\n\n"
+        f"মাশাআল্লাহ! RTX Trading Family তে\n"
+        f"আপনাকে স্বাগতম! 🎉\n\n"
+        f"Bangladesh এর সবচেয়ে Powerful\n"
+        f"AI Trading Signal Provider!\n\n"
+        f"✅ Real Market Data (Binance + Forex)\n"
+        f"✅ Powerful AI Signal\n"
+        f"✅ ৫ মিনিটে Access\n"
+        f"✅ ২৪/২৪ Support\n"
+        f"✅ Free Signal Available\n\n"
+        f"ইনশাআল্লাহ সফলতা আসবে! 🚀\n\n"
+        f"━━━━━━━━━━━━━━━━━━━━\n"
+        f"👇 কী করতে চান?\n"
+        f"━━━━━━━━━━━━━━━━━━━━"
+    )
+
+    keyboard = InlineKeyboardMarkup([
         [
             InlineKeyboardButton("📦 Products", callback_data="products"),
-            InlineKeyboardButton("💰 Price List", callback_data="price_list"),
+            InlineKeyboardButton("💰 Price", callback_data="price_list"),
         ],
         [
-            InlineKeyboardButton("🎁 Promo Code", callback_data="promo"),
+            InlineKeyboardButton("🎁 Promo", callback_data="promo"),
             InlineKeyboardButton("🎬 Demo", callback_data="demo"),
         ],
         [
@@ -32,34 +57,7 @@ def _main_keyboard():
         ],
     ])
 
-
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """User /start দিলে"""
-
-    user = update.effective_user
-    first_name = user.first_name or "ভাই"
-
-    text = (
-        f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"🌟 আসসালামু আলাইকুম {first_name} ভাই!\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"স্বাগতম RTX Trading Family তে! 🎉\n\n"
-        f"Bangladesh এর সবচেয়ে Powerful\n"
-        f"Trading Signal Provider!\n\n"
-        f"✅ Real Market Data (Binance + Forex)\n"
-        f"✅ AI Powered Signal\n"
-        f"✅ ৫ মিনিটে Access\n"
-        f"✅ ২৪/২৪ Support\n"
-        f"✅ Free Signal Available\n\n"
-        f"━━━━━━━━━━━━━━━━━━━━\n"
-        f"👇 কী করতে চান?\n"
-        f"━━━━━━━━━━━━━━━━━━━━"
-    )
-
     try:
-        await update.message.reply_text(
-            text=text,
-            reply_markup=_main_keyboard(),
-        )
+        await update.message.reply_text(text=text, reply_markup=keyboard)
     except Exception as e:
-        log.error(f"Start command error: {e}")
+        log.error(f"Start error: {e}")
