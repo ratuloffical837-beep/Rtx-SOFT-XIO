@@ -244,7 +244,7 @@ _HELP_ANSWERS = {
         "📱 bKash Guide\n"
         "━━━━━━━━━━━━━━━━━━━━\n\n"
         "1️⃣ bKash App → Send Money\n"
-        "2️⃣ Number: 01344594241\n"
+        "2️⃣ Number: 01725218874\n"
         "3️⃣ Amount দিন\n"
         "4️⃣ Reference: RTX\n"
         "5️⃣ PIN → Send\n\n"
