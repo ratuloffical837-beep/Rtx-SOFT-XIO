@@ -1,8 +1,5 @@
 # ═══════════════════════════════════════
-# Smart Islamic Message Handler
-# Private: সব message এ reply
-# Group: keyword + cooldown
-# ২৪/২৪ সচল
+# Smart Islamic Message Handler - Fixed
 # ═══════════════════════════════════════
 
 import time
@@ -18,8 +15,20 @@ _cooldown_store: dict[int, float] = {}
 
 
 def _reply_keyboard():
-    """Reply এর নিচে buttons"""
+    """Reply এর নিচে সব buttons — /start এর মতো"""
     return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("📦 Products", callback_data="products"),
+            InlineKeyboardButton("💰 Price List", callback_data="price_list"),
+        ],
+        [
+            InlineKeyboardButton("🎁 Promo Code", callback_data="promo"),
+            InlineKeyboardButton("🎬 Demo", callback_data="demo"),
+        ],
+        [
+            InlineKeyboardButton("❓ FAQ", callback_data="faq"),
+            InlineKeyboardButton("👨‍💼 Support", callback_data="support"),
+        ],
         [
             InlineKeyboardButton("🥉 Qutex Signal", url="https://t.me/qutex4241pro_bot/signalapp"),
         ],
@@ -31,7 +40,7 @@ def _reply_keyboard():
         ],
         [
             InlineKeyboardButton("🎯 Sales Bot", url="https://t.me/rtxearn2_bot"),
-            InlineKeyboardButton("👨‍💼 Support", url="https://t.me/ratulhossain56"),
+            InlineKeyboardButton("👨‍💼 Admin", url="https://t.me/ratulhossain56"),
         ],
     ])
 
@@ -56,7 +65,7 @@ def _should_reply_in_group(text: str) -> bool:
 
 
 async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Smart Islamic message handler"""
+    """Smart Islamic message handler — সব buttons সহ"""
 
     if not update.message or not update.message.text:
         return
@@ -102,8 +111,13 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
     except Exception as e:
         log.error(f"Reply error: {e}")
         answer = (
-            "আসসালামু আলাইকুম প্রিয় ভাই! 🌸\n"
-            "বিস্তারিত জানতে @rtxearn2_bot এ মেসেজ দিন ইনশাআল্লাহ 🙏"
+            "আসসালামু আলাইকুম প্রিয় ভাই! 🌸\n\n"
+            "আমাদের ৩টি Powerful Signal Bot আছে:\n"
+            "🥉 Qutex Signal — 1,000tk\n"
+            "🥈 Qutex Premium — 2,000tk\n"
+            "🥇 RTX PRO MAX AI — 5,000tk\n\n"
+            "🎁 Promo: RTX4241\n"
+            "নিচের বাটন থেকে দেখুন ইনশাআল্লাহ 👇"
         )
 
     try:
@@ -112,10 +126,9 @@ async def handle_text_message(update: Update, context: ContextTypes.DEFAULT_TYPE
             reply_markup=_reply_keyboard(),
             reply_to_message_id=message.message_id,
         )
-        log.info(f"✅ Reply [{chat_type}] → user {user_id}")
     except Exception as e:
         log.error(f"❌ Reply failed: {e}")
         try:
             await message.reply_text(text=answer, reply_markup=_reply_keyboard())
-        except Exception as e2:
-            log.error(f"❌ Fallback failed: {e2}")
+        except Exception:
+            pass
