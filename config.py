@@ -2,7 +2,6 @@ import os
 
 # ═══════════════════════════════════════
 # RTX Bot - Master Configuration
-# Islamic Muslim Assistant Version
 # ═══════════════════════════════════════
 
 # ─── API Keys ───
@@ -10,8 +9,8 @@ BOT_TOKEN       = os.environ.get("BOT_TOKEN", "")
 GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY", "")
 
 # ─── Telegram IDs ───
-CHANNEL_ID      = -1003214037943
-GROUP_ID        = -1003680966726
+CHANNEL_ID      = int(os.environ.get("CHANNEL_ID", "-1003214037943"))
+GROUP_ID        = int(os.environ.get("GROUP_ID", "-1003680966726"))
 
 # ─── Usernames & Contacts ───
 SALES_BOT           = "@rtxearn2_bot"
@@ -28,57 +27,25 @@ WHATSAPP_NUMBER = "01344594241"
 BUSINESS_NAME   = "RTX"
 PROMO_CODE      = "RTX4241"
 
+# ─── Twelvedata API Info ───
+TWELVEDATA_SITE       = "twelvedata.com"
+TWELVEDATA_TRIAL_KEY  = "abcbdaea55ce4796bb139c1a05e6a344"
+
 # ─── Keep Alive ───
 RENDER_URL      = os.environ.get("RENDER_URL", "")
 PING_INTERVAL   = 120
 
 # ═══════════════════════════════════════
-# Group Reply Settings
+# Group Reply Settings (Mode B)
 # ═══════════════════════════════════════
-REPLY_KEYWORDS = [
-    "price", "প্রাইস", "দাম", "কত",
-    "buy", "কিনব", "কিনতে", "কিনি",
-    "signal", "সিগনাল",
-    "promo", "প্রোমো", "discount", "ছাড়",
-    "support", "সাপোর্ট", "সমস্যা", "problem",
-    "bot", "বট", "app", "এপ",
-    "forex", "crypto", "বিটকয়েন", "bitcoin",
-    "payment", "পেমেন্ট", "bkash", "nagad", "বিকাশ", "নগদ",
-    "profit", "income", "আয়",
-    "hi", "hello", "হাই", "হ্যালো",
-    "salam", "সালাম", "আসসালামু",
-    "ভাই", "bhai", "help", "হেল্প",
-    "কেমন", "আছেন", "আছো",
-    "free", "ফ্রি", "trial",
-    "refund", "রিফান্ড",
-    "access", "একসেস",
-    "rtx", "qutex",
-]
-
-GROUP_COOLDOWN = 30      # seconds
-PRIVATE_COOLDOWN = 5     # seconds
+GROUP_COOLDOWN   = 30
+PRIVATE_COOLDOWN = 5
 
 # ═══════════════════════════════════════
-# 15-Minute Rotation Schedule
-# সকাল ৫টা থেকে রাত ১টা
-# প্রতি ১৫ মিনিটে ১টা post
-# 
-# Rotation Pattern:
-#   00 min → motivational/sigma
-#   15 min → interactive poll
-#   30 min → bot promotion (3 apps)
-#   45 min → educational/tips
+# Channel Post Schedule
+# সকাল ৮টা - রাত ১১টা
+# প্রতি ১৫ মিনিটে ১টা = ৬০ post/day
 # ═══════════════════════════════════════
-
-ONLY_CHANNEL = True  # ✅ Double post fix
-
-# Post types rotation (15-min cycle)
-POST_ROTATION = [
-    "motivational",      # 00 min
-    "poll",              # 15 min
-    "bot_promo",         # 30 min
-    "educational",       # 45 min
-]
-
-# Active hours: সকাল ৫টা - রাত ১টা
-ACTIVE_HOURS = list(range(5, 24)) + [0, 1]  # 5,6,7...23,0,1
+ACTIVE_HOURS  = list(range(8, 23))   # 8, 9, 10 ... 22 (23 না, কারণ 22:45 last)
+POST_MINUTES  = [0, 15, 30, 45]
+ONLY_CHANNEL  = True   # গ্রুপে কোনো auto post যাবে না
